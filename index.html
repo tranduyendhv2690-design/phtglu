@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phiếu Học Tập Tương Tác - Glucose</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-light: #818CF8;
+            --secondary: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --info: #0EA5E9;
+            --bg: #F3F4F6;
+            --card-bg: #FFFFFF;
+            --text: #1F2937;
+            --text-light: #6B7280;
+            --border: #E5E7EB;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --radius: 12px;
+            
+            /* Tùy chỉnh màu các section */
+            --sec-mcq: #EEF2FF; /* Indigo light */
+            --sec-fib: #ECFDF5; /* Emerald light */
+            --sec-tf: #FFFBEB;  /* Amber light */
+            --sec-match: #FAF5FF; /* Purple light */
+            --sec-dnd: #FEF2F2; /* Red light */
+            --sec-video: #F0F9FF; /* Sky light */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1E3A8A, #4F46E5, #7C3AED);
+            color: white;
+            padding: 30px 20px;
+            border-radius: var(--radius);
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header h2 {
+            font-size: 20px;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .student-info {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: var(--text-light);
+        }
+
+        .input-group input {
+            padding: 10px 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary);
+        }
+
+        .instructions {
+            background: #FFF;
+            border-left: 4px solid var(--warning);
+            padding: 15px 20px;
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .section-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .section-header {
+            padding: 15px 20px;
+            font-weight: 700;
+            font-size: 18px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-body {
+            padding: 20px;
+        }
+
+        /* Màu nền riêng cho từng phần */
+        #sec-mcq .section-header { background-color: var(--sec-mcq); color: #3730A3; }
+        #sec-fib .section-header { background-color: var(--sec-fib); color: #065F46; }
+        #sec-tf .section-header { background-color: var(--sec-tf); color: #92400E; }
+        #sec-match .section-header { background-color: var(--sec-match); color: #5B21B6; }
+        #sec-dnd .section-header { background-color: var(--sec-dnd); color: #991B1B; }
+        #sec-video .section-header { background-color: var(--sec-video); color: #075985; }
+
+        .question {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed var(--border);
+        }
+        .question:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        /* Trắc nghiệm & Đúng sai */
+        .options-list {
+            list-style: none;
+            margin-top: 10px;
+        }
+        .option-item {
+            margin-bottom: 8px;
+        }
+        .option-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: background 0.2s;
+            border: 1px solid transparent;
+        }
+        .option-label:hover {
+            background: #F9FAFB;
+            border-color: var(--border);
+        }
+        .option-label input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+            accent-color: var(--primary);
+        }
+
+        /* Điền khuyết */
+        .fib-input {
+            border: none;
+            border-bottom: 2px solid var(--primary);
+            background: transparent;
+            font-weight: 600;
+            color: var(--primary);
+            text-align: center;
+            padding: 2px 5px;
+            margin: 0 5px;
+            outline: none;
+            width: 120px;
+        }
+        .fib-input:focus {
+            border-bottom-color: var(--warning);
+        }
+
+        /* Nối cột */
+        .match-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        .match-column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .match-item {
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+            user-select: none;
+            position: relative;
+        }
+        .match-item:hover {
+            background: #F9FAFB;
+        }
+        .match-item.selected {
+            border-color: var(--primary);
+            background: var(--sec-mcq);
+        }
+        .match-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Kéo thả */
+        .dnd-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .dnd-source {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 15px;
+            background: #F3F4F6;
+            border-radius: 8px;
+            min-height: 80px;
+        }
+        .draggable-item {
+            width: 100px;
+            height: 100px;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            text-align: center;
+            padding: 5px;
+            user-select: none;
+            transition: all 0.2s;
+        }
+        .draggable-item img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .draggable-item:active { cursor: grabbing; }
+        .draggable-item.clicked-active {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .dnd-targets {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .drop-zone-wrap {
+            text-align: center;
+        }
+        .drop-zone {
+            width: 100%;
+            height: 120px;
+            border: 2px dashed var(--text-light);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #FAFAFA;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+        .drop-zone.drag-over {
+            background: var(--sec-mcq);
+            border-color: var(--primary);
+        }
+
+        /* Video */
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            overflow: hidden;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.3s, transform 0.1s;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-success { background: var(--secondary); color: white; }
+        .btn-warning { background: var(--warning); color: white; }
+        .btn-block { width: 100%; text-align: center; margin-top: 20px; font-size: 18px; padding: 15px;}
+
+        /* Admin Button Fixed */
+        .btn-admin {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1F2937;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 100;
+        }
+
+        /* Feedback States */
+        .correct-text { color: var(--secondary) !important; font-weight: bold; }
+        .wrong-text { color: var(--danger) !important; font-weight: bold; }
+        .feedback-icon { margin-left: 10px; font-weight: bold; }
+        
+        .correct-box { border-color: var(--secondary) !important; background-color: var(--sec-fib) !important; }
+        .wrong-box { border-color: var(--danger) !important; background-color: var(--sec-dnd) !important; }
+        .ans-hint { font-size: 14px; color: var(--danger); margin-top: 5px; font-style: italic; display: block;}
+
+        /* Score Display */
+        .score-display {
+            display: none;
+            text-align: center;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            border: 2px solid var(--secondary);
+        }
+        .score-display h3 { color: var(--secondary); font-size: 24px; margin-bottom: 10px; }
+        .score-number { font-size: 48px; font-weight: 700; color: var(--primary); }
+
+        /* Ghi nhớ */
+        .summary-card {
+            background: #FFFBEB;
+            border: 2px solid #FCD34D;
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-top: 30px;
+        }
+        .summary-card h3 { color: #B45309; margin-bottom: 10px; }
+        .summary-card ul { margin-left: 20px; color: #78350F; }
+        .summary-card li { margin-bottom: 5px; }
+
+        /* Custom Modals (No native alert/prompt) */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            transform: translateY(-20px);
+            transition: transform 0.3s;
+        }
+        .modal-overlay.active .modal-box { transform: translateY(0); }
+        
+        .modal-title { font-size: 20px; font-weight: bold; margin-bottom: 15px; }
+        .modal-body { margin-bottom: 20px; }
+        .modal-footer { display: flex; justify-content: flex-end; gap: 10px; }
+        .modal-input { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 16px; margin-top: 10px;}
+
+        /* Admin Modal (Full screenish) */
+        .admin-modal .modal-box {
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .admin-section-config {
+            border: 1px solid var(--border);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            background: #F9FAFB;
+        }
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        /* Custom Toast */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast {
+            background: white;
+            color: var(--text);
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-left: 5px solid var(--info);
+            transform: translateX(120%);
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        .toast.show { transform: translateX(0); }
+        .toast.error { border-left-color: var(--danger); }
+        .toast.success { border-left-color: var(--secondary); }
+
+        @media (max-width: 600px) {
+            .student-info { grid-template-columns: 1fr; }
+            .match-container { grid-template-columns: 1fr; gap: 10px;}
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>PHIẾU HỌC TẬP TƯƠNG TÁC</h1>
+            <h2 id="display-lesson-name">Hóa học 12 - Bài: Glucose</h2>
+        </div>
+
+        <div class="student-info">
+            <div class="input-group">
+                <label for="student-name">Họ và tên học sinh:</label>
+                <input type="text" id="student-name" placeholder="Nhập họ và tên...">
+            </div>
+            <div class="input-group">
+                <label for="student-class">Lớp:</label>
+                <input type="text" id="student-class" placeholder="Nhập lớp...">
+            </div>
+        </div>
+
+        <div class="instructions">
+            <strong>MỤC TIÊU & HƯỚNG DẪN:</strong>
+            <ul style="margin-left: 20px; margin-top: 5px; color: var(--text-light);">
+                <li>Hiểu rõ cấu trúc, tính chất hóa học đặc trưng của Glucose và Fructose.</li>
+                <li>Học sinh đọc kỹ câu hỏi và làm bài trực tiếp trên thiết bị (chọn đáp án, điền từ, kéo thả).</li>
+                <li>Nhấp vào nút "NỘP BÀI & CHẤM ĐIỂM" ở cuối trang sau khi hoàn thành.</li>
+            </ul>
+        </div>
+
+        <!-- Vùng hiển thị điểm số (ẩn lúc đầu) -->
+        <div id="score-section" class="score-display">
+            <h3>KẾT QUẢ CỦA EM</h3>
+            <div class="score-number"><span id="final-score">0</span> / <span id="max-score-display">10</span></div>
+            <p id="score-msg" style="margin-top: 10px; color: var(--text-light);"></p>
+        </div>
+
+        <div id="worksheet-content">
+            <!-- Dữ liệu sẽ được render từ cấu hình -->
+        </div>
+
+        <button id="btn-submit" class="btn btn-primary btn-block" onclick="submitWorksheet()">NỘP BÀI & CHẤM ĐIỂM</button>
+
+        <div class="summary-card">
+            <h3>🧠 GHI NHỚ SIÊU NHANH</h3>
+            <ul>
+                <li><strong>Monosaccharide:</strong> Glucose, Fructose (C<sub>6</sub>H<sub>12</sub>O<sub>6</sub>) - Không bị thủy phân.</li>
+                <li><strong>Cấu tạo Glucose:</strong> 5 nhóm -OH liền kề và 1 nhóm -CHO. Chủ yếu tồn tại dạng mạch vòng.</li>
+                <li><strong>Cấu tạo Fructose:</strong> 5 nhóm -OH và 1 nhóm ketone. Chuyển hóa thành glucose trong môi trường kiềm.</li>
+                <li><strong>Tính chất polyalcohol:</strong> Hòa tan Cu(OH)<sub>2</sub> ở nhiệt độ thường tạo dung dịch xanh lam.</li>
+                <li><strong>Tính chất aldehyde:</strong> Bị oxi hóa bởi Cu(OH)<sub>2</sub> đun nóng (kết tủa đỏ gạch), thuốc thử Tollens (tráng bạc), nước Bromine.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Nút quản trị -->
+    <div class="btn-admin" onclick="openAdminAuth()" title="Quản trị giáo viên">⚙️</div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-title">Xác thực Quản trị</div>
+            <div class="modal-body">
+                <label>Vui lòng nhập mật khẩu giáo viên:</label>
+                <input type="password" id="admin-pass-input" class="modal-input" placeholder="Nhập mật khẩu...">
+                <div id="auth-error" style="color: var(--danger); font-size: 14px; margin-top: 5px; display: none;">Sai mật khẩu!</div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" style="background: var(--border);" onclick="closeModal('auth-modal')">Hủy</button>
+                <button class="btn btn-primary" onclick="verifyAdmin()">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Setting Modal -->
+    <div id="admin-modal" class="modal-overlay admin-modal">
+        <div class="modal-box">
+            <div class="modal-title">⚙️ Cài đặt Phiếu Học Tập</div>
+            <div class="modal-body" id="admin-form-container">
+                <!-- Sẽ được điền bằng JS -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn" style="background: var(--border);" onclick="closeModal('admin-modal')">Hủy</button>
+                <button class="btn btn-warning" onclick="resetConfig()">Khôi phục mặc định</button>
+                <button class="btn btn-success" onclick="saveAdminConfig()">Lưu cài đặt</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DỮ LIỆU CÂU HỎI GỐC (Trích xuất từ SGK) ---
+        const rawData = {
+            mcq: [
+                { q: "Chất nào sau đây thuộc loại monosaccharide?", opts: ["Glucose", "Saccharose", "Tinh bột", "Cellulose"], ans: 0 },
+                { q: "Phân tử glucose ở dạng mạch hở chứa bao nhiêu nhóm hydroxy (-OH)?", opts: ["3 nhóm", "4 nhóm", "5 nhóm", "6 nhóm"], ans: 2 },
+                { q: "Để chứng minh phân tử glucose có nhiều nhóm hydroxy liền kề, người ta dùng thuốc thử:", opts: ["Nước bromine", "Cu(OH)2 ở nhiệt độ thường", "Dung dịch AgNO3/NH3", "Cu(OH)2/NaOH đun nóng"], ans: 1 },
+                { q: "Trong môi trường nào, glucose và fructose có thể chuyển hoá qua lại lẫn nhau?", opts: ["Môi trường acid", "Môi trường kiềm", "Môi trường trung tính", "Không thể chuyển hóa"], ans: 1 },
+                { q: "Hiện tượng quan sát được khi đun nóng dung dịch glucose với Cu(OH)2 trong môi trường kiềm là:", opts: ["Tạo dung dịch màu xanh lam", "Tạo kết tủa trắng", "Tạo kết tủa đỏ gạch", "Tạo lớp bạc sáng bóng"], ans: 2 }
+            ],
+            fib: [
+                { text: "Carbohydrate là những hợp chất hữu cơ {0}, thường có công thức chung là {1}.", ans: ["tạp chức", "Cn(H2O)m", "C_n(H_2O)_m"] }, // multiple possible accepted formats
+                { text: "Nhóm {0} của glucose có thể bị oxi hoá bởi Cu(OH)2 trong môi trường kiềm khi đun nóng.", ans: ["aldehyde", "CHO", "-CHO"] },
+                { text: "Fructose làm mất màu nước bromine {0} glucose.", ans: ["không giống", "khác với", "không như"] }
+            ],
+            tf: [
+                { q: "Cả glucose và fructose đều có công thức phân tử là C6H12O6.", ans: true },
+                { q: "Trong dung dịch, phân tử glucose chỉ tồn tại ở dạng mạch hở.", ans: false },
+                { q: "Fructose có chứa một nhóm ketone và năm nhóm hydroxy.", ans: true },
+                { q: "Cả glucose và fructose đều làm mất màu dung dịch nước bromine.", ans: false }
+            ],
+            match: {
+                left: ["Monosaccharide", "Disaccharide", "Polysaccharide", "Tính chất Polyalcohol"],
+                right: ["Glucose, Fructose", "Saccharose, Maltose", "Tinh bột, Cellulose", "Hòa tan Cu(OH)2 tạo dung dịch xanh lam"],
+                // Khớp đúng: left[0]-right[0], left[1]-right[1]...
+            },
+            dnd: [
+                { id: "img-glu", label: "Cấu tạo Glucose (Hở)", type: "text" }, // default text placeholder
+                { id: "img-fru", label: "Cấu tạo Fructose (Hở)", type: "text" }
+            ],
+            video: {
+                url: "https://www.youtube.com/embed/gP1J8KkS7_M", // Placeholder (Tollens test general)
+                q: "Khi thực hiện phản ứng tráng bạc, sản phẩm bám trên thành ống nghiệm là kim loại {0}.",
+                ans: ["bạc", "Ag"]
+            }
+        };
+
+        // --- CẤU HÌNH HIỆN TẠI ---
+        let config = {
+            lessonName: "Hóa học 12 - Bài: Glucose",
+            totalScore: 10,
+            sections: {
+                mcq: { active: true, title: "PHẦN 1: TRẮC NGHIỆM", qCount: 4, score: 2 },
+                fib: { active: true, title: "PHẦN 2: ĐIỀN KHUYẾT", qCount: 2, score: 1 },
+                tf:  { active: true, title: "PHẦN 3: ĐÚNG / SAI", qCount: 4, score: 2 },
+                match:{active: true, title: "PHẦN 4: NỐI CỘT", qCount: 4, score: 2 },
+                dnd: { active: true, title: "PHẦN 5: KÉO THẢ ẢNH", qCount: 2, score: 2 },
+                video:{active: true, title: "PHẦN 6: VIDEO TƯƠNG TÁC", qCount: 1, score: 1 }
+            },
+            dndImages: {
+                "img-glu": "", // base64 if uploaded
+                "img-fru": ""
+            },
+            videoUrl: "https://www.youtube.com/embed/hB8mBwzHn8U", // Phản ứng tráng bạc
+            gasUrl: "https://script.google.com/macros/s/AKfycbwDYn2NGdCGrV4pb5w4Pk5MEw4riSztwiI6cN5GKYGjhmI1X8aHQ3dGmiTKJPo8BKRr/exec" // Đường dẫn Google Apps Script để lưu kết quả
+        };
+
+        let hasSubmitted = false;
+        let matchPairs = {}; // Lưu trữ kết nối: { leftIndex: rightIndex }
+        let currentSelectedMatchLeft = null;
+        let matchBadgeCounter = 1;
+        let selectedDragItem = null;
+
+        function init() {
+            // Load từ localStorage nếu có
+            const savedConfig = localStorage.getItem('glucoseWorksheetConfig');
+            if (savedConfig) {
+                try { config = JSON.parse(savedConfig); } catch (e) { console.error("Lỗi parse config", e); }
+            }
+            
+            document.getElementById('display-lesson-name').textContent = config.lessonName;
+            renderWorksheet();
+        }
+
+        function renderWorksheet() {
+            const container = document.getElementById('worksheet-content');
+            container.innerHTML = '';
+            hasSubmitted = false;
+            matchPairs = {};
+            matchBadgeCounter = 1;
+
+            if (config.sections.mcq.active) container.appendChild(renderMCQ());
+            if (config.sections.fib.active) container.appendChild(renderFIB());
+            if (config.sections.tf.active) container.appendChild(renderTF());
+            if (config.sections.match.active) container.appendChild(renderMatch());
+            if (config.sections.dnd.active) container.appendChild(renderDnD());
+            if (config.sections.video.active) container.appendChild(renderVideo());
+
+            // Reset UI
+            document.getElementById('score-section').style.display = 'none';
+            document.getElementById('btn-submit').style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        function createSectionCard(id, title, scoreText) {
+            const div = document.createElement('div');
+            div.className = 'section-card';
+            div.id = id;
+            div.innerHTML = `
+                <div class="section-header">
+                    <span>${title}</span>
+                    <span style="font-size: 14px; font-weight: normal;">[ Tối đa: ${scoreText} điểm ]</span>
+                </div>
+                <div class="section-body"></div>
+            `;
+            return div;
+        }
+
+        function renderMCQ() {
+            const cfg = config.sections.mcq;
+            const card = createSectionCard('sec-mcq', cfg.title, cfg.score);
+            const body = card.querySelector('.section-body');
+            
+            let html = '';
+            const limit = Math.min(cfg.qCount, rawData.mcq.length);
+            for(let i=0; i<limit; i++) {
+                const q = rawData.mcq[i];
+                html += `
+                <div class="question" data-idx="${i}">
+                    <p><strong>Câu ${i+1}:</strong> ${q.q}</p>
+                    <ul class="options-list">
+                        ${q.opts.map((opt, oIdx) => `
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="mcq-${i}" value="${oIdx}">
+                                    ${String.fromCharCode(65 + oIdx)}. ${opt}
+                                </label>
+                            </li>
+                        `).join('')}
+                    </ul>
+                    <div class="feedback-msg"></div>
+                </div>`;
+            }
+            body.innerHTML = html;
+            return card;
+        }
+
+        function renderFIB() {
+            const cfg = config.sections.fib;
+            const card = createSectionCard('sec-fib', cfg.title, cfg.score);
+            const body = card.querySelector('.section-body');
+            
+            let html = '';
+            const limit = Math.min(cfg.qCount, rawData.fib.length);
+            for(let i=0; i<limit; i++) {
+                let qText = rawData.fib[i].text;
+                // Thay thế {0}, {1} thành thẻ input
+                qText = qText.replace(/\{(\d+)\}/g, (match, p1) => {
+                    return `<input type="text" class="fib-input" data-qidx="${i}" data-blank="${p1}" placeholder="...">`;
+                });
+                
+                html += `
+                <div class="question">
+                    <p><strong>Câu ${i+1}:</strong> Điền từ/cụm từ thích hợp vào chỗ trống:</p>
+                    <p style="margin-top: 10px; font-size: 16px; line-height: 2;">${qText}</p>
+                    <div class="feedback-msg"></div>
+                </div>`;
+            }
+            body.innerHTML = html;
+            return card;
+        }
+
+        function renderTF() {
+            const cfg = config.sections.tf;
+            const card = createSectionCard('sec-tf', cfg.title, cfg.score);
+            const body = card.querySelector('.section-body');
+            
+            let html = '<p style="margin-bottom: 15px;">Chọn Đúng hoặc Sai cho mỗi phát biểu sau:</p>';
+            const limit = Math.min(cfg.qCount, rawData.tf.length);
+            for(let i=0; i<limit; i++) {
+                const q = rawData.tf[i];
+                html += `
+                <div class="question" data-idx="${i}">
+                    <p><strong>(${i+1})</strong> ${q.q}</p>
+                    <div style="margin-top: 10px; display: flex; gap: 20px;">
+                        <label class="option-label"><input type="radio" name="tf-${i}" value="true"> Đúng</label>
+                        <label class="option-label"><input type="radio" name="tf-${i}" value="false"> Sai</label>
+                    </div>
+                    <div class="feedback-msg"></div>
+                </div>`;
+            }
+            body.innerHTML = html;
+            return card;
+        }
+
+        function renderMatch() {
+            const cfg = config.sections.match;
+            const card = createSectionCard('sec-match', cfg.title, cfg.score);
+            const body = card.querySelector('.section-body');
+            
+            let html = `<p style="margin-bottom: 15px;"><i>Hướng dẫn: Nhấp chọn 1 ô ở cột Trái, sau đó nhấp chọn 1 ô tương ứng ở cột Phải để tạo liên kết. Nhấp lại để hủy.</i></p>
+            <div class="match-container">
+                <div class="match-column" id="match-col-left"></div>
+                <div class="match-column" id="match-col-right"></div>
+            </div>`;
+            body.innerHTML = html;
+
+            const limit = Math.min(cfg.qCount, rawData.match.left.length);
+            const colLeft = body.querySelector('#match-col-left');
+            const colRight = body.querySelector('#match-col-right');
+
+            // Xáo trộn mảng bên phải để không song song
+            let rightItems = [];
+            for(let i=0; i<limit; i++) rightItems.push({ text: rawData.match.right[i], originalIdx: i });
+            rightItems.sort(() => Math.random() - 0.5);
+
+            for(let i=0; i<limit; i++) {
+                // Cột trái
+                const dLeft = document.createElement('div');
+                dLeft.className = 'match-item match-left';
+                dLeft.dataset.idx = i;
+                dLeft.innerText = rawData.match.left[i];
+                dLeft.onclick = () => handleMatchClick('left', dLeft);
+                colLeft.appendChild(dLeft);
+
+                // Cột phải
+                const dRight = document.createElement('div');
+                dRight.className = 'match-item match-right';
+                dRight.dataset.idx = rightItems[i].originalIdx;
+                dRight.innerText = rightItems[i].text;
+                dRight.onclick = () => handleMatchClick('right', dRight);
+                colRight.appendChild(dRight);
+            }
+            return card;
+        }
+
+        function handleMatchClick(side, el) {
+            if (hasSubmitted) return;
+            
+            if (side === 'left') {
+                // Nếu đang có tag, nghĩa là muốn hủy
+                if (el.dataset.pairId) {
+                    removeMatchPair(el.dataset.pairId);
+                    return;
+                }
+                
+                // Bỏ chọn tất cả bên trái trước
+                document.querySelectorAll('.match-left').forEach(item => item.classList.remove('selected'));
+                el.classList.add('selected');
+                currentSelectedMatchLeft = el;
+            } else if (side === 'right') {
+                // Nếu ô này đã được ghép, hủy ghép cũ
+                if (el.dataset.pairId) {
+                    removeMatchPair(el.dataset.pairId);
+                }
+                
+                if (currentSelectedMatchLeft) {
+                    // Tạo kết nối
+                    const pairId = matchBadgeCounter++;
+                    currentSelectedMatchLeft.dataset.pairId = pairId;
+                    el.dataset.pairId = pairId;
+                    
+                    // Thêm UI Badge
+                    currentSelectedMatchLeft.innerHTML = currentSelectedMatchLeft.innerText + `<div class="match-badge">${pairId}</div>`;
+                    el.innerHTML = el.innerText + `<div class="match-badge">${pairId}</div>`;
+                    
+                    // Xóa trạng thái chọn
+                    currentSelectedMatchLeft.classList.remove('selected');
+                    
+                    // Lưu logic
+                    matchPairs[currentSelectedMatchLeft.dataset.idx] = el.dataset.idx;
+                    currentSelectedMatchLeft = null;
+                } else {
+                    showToast("Hãy chọn 1 mục ở cột Trái trước!", "error");
+                }
+            }
+        }
+
+        function removeMatchPair(pairId) {
+            document.querySelectorAll(`.match-item[data-pair-id="${pairId}"]`).forEach(el => {
+                el.removeAttribute('data-pair-id');
+                // Xóa badge
+                const badge = el.querySelector('.match-badge');
+                if (badge) badge.remove();
+                if (el.classList.contains('match-left')) {
+                    delete matchPairs[el.dataset.idx];
+                }
+            });
+            currentSelectedMatchLeft = null;
+            document.querySelectorAll('.match-left').forEach(item => item.classList.remove('selected'));
+        }
+
+        function renderDnD() {
+            const cfg = config.sections.dnd;
+            const card = createSectionCard('sec-dnd', cfg.title, cfg.score);
+            const body = card.querySelector('.section-body');
+            
+            let html = `<p style="margin-bottom: 15px;"><i>Hướng dẫn: Kéo thả (hoặc nhấp hình rồi nhấp vào ô) để phân loại.</i></p>
+            <div class="dnd-container">
+                <div class="dnd-source" id="dnd-source">
+                    <!-- Ảnh sẽ được gen ở đây -->
+                </div>
+                <div class="dnd-targets">
+                    <div class="drop-zone-wrap">
+                        <div class="drop-zone" data-target="img-glu">Thả cấu tạo Glucose vào đây</div>
+                        <strong>GLUCOSE</strong>
+                    </div>
+                    <div class="drop-zone-wrap">
+                        <div class="drop-zone" data-target="img-fru">Thả cấu tạo Fructose vào đây</div>
+                        <strong>FRUCTOSE</strong>
+                    </div>
+                </div>
+            </div>`;
+            body.innerHTML = html;
+
+            const source = body.querySelector('#dnd-source');
+            rawData.dnd.forEach(item => {
+                const el = document.createElement('div');
+                el.className = 'draggable-item';
+                el.draggable = true;
+                el.dataset.id = item.id;
+                
+                // Nếu giáo viên có upload ảnh thì dùng ảnh, không thì dùng text/placeholder
+                if (config.dndImages && config.dndImages[item.id]) {
+                    el.innerHTML = `<img src="${config.dndImages[item.id]}" alt="${item.label}">`;
+                } else {
+                    el.innerText = item.label; // text placeholder
+                }
+
+                // Native Events
+                el.addEventListener('dragstart', (e) => {
+                    if (hasSubmitted) { e.preventDefault(); return; }
+                    e.dataTransfer.setData('text/plain', item.id);
+                    el.classList.add('dragging');
+                });
+                el.addEventListener('dragend', () => el.classList.remove('dragging'));
+
+                // Click to move (Mobile friendly)
+                el.addEventListener('click', (e) => {
+                    if (hasSubmitted) return;
+                    e.stopPropagation(); // Prevent document click
+                    
+                    if (selectedDragItem === el) {
+                        el.classList.remove('clicked-active');
+                        selectedDragItem = null;
+                    } else {
+                        if (selectedDragItem) selectedDragItem.classList.remove('clicked-active');
+                        selectedDragItem = el;
+                        el.classList.add('clicked-active');
+                    }
+                });
+
+                source.appendChild(el);
+            });
+
+            // Target events
+            const dropZones = body.querySelectorAll('.drop-zone, .dnd-source');
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', (e) => {
+                    if (hasSubmitted) return;
+                    e.preventDefault();
+                    zone.classList.add('drag-over');
+                });
+                zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+                zone.addEventListener('drop', (e) => {
+                    if (hasSubmitted) return;
+                    e.preventDefault();
+                    zone.classList.remove('drag-over');
+                    const id = e.dataTransfer.getData('text/plain');
+                    const draggableElement = document.querySelector(`.draggable-item[data-id="${id}"]`);
+                    if (draggableElement) {
+                        zone.innerHTML = ''; // clear text if target
+                        zone.appendChild(draggableElement);
+                    }
+                });
+
+                // Click to drop (Mobile friendly)
+                zone.addEventListener('click', () => {
+                    if (hasSubmitted) return;
+                    if (selectedDragItem) {
+                        if (zone.classList.contains('drop-zone')) zone.innerHTML = '';
+                        zone.appendChild(selectedDragItem);
+                        selectedDragItem.classList.remove('clicked-active');
+                        selectedDragItem = null;
+                    }
+                });
+            });
+
+            // Click outside to cancel drag selection
+            document.addEventListener('click', () => {
+                if (selectedDragItem) {
+                    selectedDragItem.classList.remove('clicked-active');
+                    selectedDragItem = null;
+                }
+            });
+
+            return card;
+        }
+
+        function renderVideo() {
+            const cfg = config.sections.video;
+            const card = createSectionCard('sec-video', cfg.title, cfg.score);
+            const body = card.querySelector('.section-body');
+            
+            let qText = rawData.video.q.replace(/\{(\d+)\}/g, `<input type="text" class="fib-input" id="video-ans" placeholder="...">`);
+            
+            body.innerHTML = `
+                <div class="video-wrapper">
+                    <iframe src="${config.videoUrl}" allowfullscreen></iframe>
+                </div>
+                <div class="question" style="border: none;">
+                    <p><strong>Quan sát video và điền từ:</strong></p>
+                    <p style="margin-top: 10px;">${qText}</p>
+                    <div id="video-feedback" class="feedback-msg"></div>
+                </div>
+            `;
+            return card;
+        }
+
+        function cleanString(str) {
+            return str.toLowerCase().replace(/[\s\.\,]/g, '').trim();
+        }
+
+        function submitWorksheet() {
+            if (!document.getElementById('student-name').value.trim()) {
+                showToast("Vui lòng nhập Họ và tên trước khi nộp bài!", "error");
+                document.getElementById('student-name').focus();
+                return;
+            }
+
+            hasSubmitted = true;
+            document.getElementById('btn-submit').style.display = 'none';
+            let totalPoints = 0;
+            let totalCorrect = 0;
+            let totalWrong = 0;
+            let totalUnanswered = 0;
+
+            const activeSections = config.sections;
+
+            // 1. Chấm Trắc nghiệm
+            if (activeSections.mcq.active) {
+                let correctCount = 0;
+                const limit = Math.min(activeSections.mcq.qCount, rawData.mcq.length);
+                for(let i=0; i<limit; i++) {
+                    const radios = document.getElementsByName(`mcq-${i}`);
+                    let ansVal = -1;
+                    radios.forEach(r => { 
+                        r.disabled = true; 
+                        if(r.checked) ansVal = parseInt(r.value); 
+                    });
+                    
+                    const qDiv = document.querySelector(`.question[data-idx="${i}"]`);
+                    const feedback = qDiv.querySelector('.feedback-msg');
+                    
+                    if (ansVal === -1) {
+                        totalUnanswered++;
+                        feedback.innerHTML = `<span class="wrong-text">✗ Chưa trả lời.</span>`;
+                    } else if (ansVal === rawData.mcq[i].ans) {
+                        correctCount++;
+                        totalCorrect++;
+                        feedback.innerHTML = `<span class="correct-text">✓ Chính xác!</span>`;
+                    } else {
+                        totalWrong++;
+                        const correctChar = String.fromCharCode(65 + rawData.mcq[i].ans);
+                        feedback.innerHTML = `<span class="wrong-text">✗ Sai. Đáp án đúng là: ${correctChar}</span>`;
+                    }
+                }
+                totalPoints += (correctCount / limit) * activeSections.mcq.score;
+            }
+
+            // 2. Chấm Điền khuyết
+            if (activeSections.fib.active) {
+                let correctCount = 0;
+                const limit = Math.min(activeSections.fib.qCount, rawData.fib.length);
+                for(let i=0; i<limit; i++) {
+                    const inputs = document.querySelectorAll(`.fib-input[data-qidx="${i}"]`);
+                    let qCorrect = true;
+                    let qUnanswered = true;
+                    inputs.forEach(input => {
+                        input.disabled = true;
+                        const val = cleanString(input.value);
+                        if (val !== '') qUnanswered = false;
+                        
+                        const validAnswers = rawData.fib[i].ans.map(a => cleanString(a));
+                        
+                        if (validAnswers.includes(val)) {
+                            input.classList.add('correct-box');
+                        } else {
+                            qCorrect = false;
+                            input.classList.add('wrong-box');
+                            const hintSpan = document.createElement('span');
+                            hintSpan.className = 'ans-hint';
+                            hintSpan.innerText = `(${rawData.fib[i].ans[0]})`;
+                            input.parentNode.insertBefore(hintSpan, input.nextSibling);
+                        }
+                    });
+                    if (qUnanswered) { totalUnanswered++; }
+                    else if (qCorrect) { correctCount++; totalCorrect++; }
+                    else { totalWrong++; }
+                }
+                totalPoints += (correctCount / limit) * activeSections.fib.score;
+            }
+
+            // 3. Chấm Đúng/Sai
+            if (activeSections.tf.active) {
+                let correctCount = 0;
+                const limit = Math.min(activeSections.tf.qCount, rawData.tf.length);
+                for(let i=0; i<limit; i++) {
+                    const radios = document.getElementsByName(`tf-${i}`);
+                    let ansVal = null;
+                    radios.forEach(r => { 
+                        r.disabled = true; 
+                        if(r.checked) ansVal = (r.value === 'true'); 
+                    });
+                    
+                    const qDiv = document.querySelector(`#sec-tf .question[data-idx="${i}"]`);
+                    const feedback = qDiv.querySelector('.feedback-msg');
+                    
+                    if (ansVal === rawData.tf[i].ans) {
+                        correctCount++;
+                        totalCorrect++;
+                        feedback.innerHTML = `<span class="correct-text">✓ Đúng!</span>`;
+                    } else if (ansVal !== null) {
+                        totalWrong++;
+                        feedback.innerHTML = `<span class="wrong-text">✗ Chưa chính xác. Trả lời đúng: ${rawData.tf[i].ans ? 'Đúng' : 'Sai'}</span>`;
+                    } else {
+                        totalUnanswered++;
+                        feedback.innerHTML = `<span class="wrong-text">✗ Chưa trả lời.</span>`;
+                    }
+                }
+                totalPoints += (correctCount / limit) * activeSections.tf.score;
+            }
+
+            // 4. Chấm Nối cột
+            if (activeSections.match.active) {
+                let correctCount = 0;
+                const limit = Math.min(activeSections.match.qCount, rawData.match.left.length);
+                
+                document.querySelectorAll('.match-item').forEach(el => el.onclick = null);
+
+                for(let i=0; i<limit; i++) {
+                    const leftIdx = i.toString();
+                    const rightIdx = matchPairs[leftIdx];
+                    const leftEl = document.querySelector(`.match-left[data-idx="${leftIdx}"]`);
+                    
+                    if (rightIdx === undefined) {
+                        totalUnanswered++;
+                        if (leftEl) {
+                            leftEl.style.borderColor = varColor('--danger');
+                            leftEl.style.backgroundColor = '#FEF2F2';
+                        }
+                    } else {
+                        const rightEl = document.querySelector(`.match-right[data-idx="${rightIdx}"]`);
+                        if (leftIdx === rightIdx.toString()) {
+                            correctCount++;
+                            totalCorrect++;
+                            leftEl.style.borderColor = varColor('--secondary'); rightEl.style.borderColor = varColor('--secondary');
+                            leftEl.style.backgroundColor = '#ECFDF5'; rightEl.style.backgroundColor = '#ECFDF5';
+                        } else {
+                            totalWrong++;
+                            leftEl.style.borderColor = varColor('--danger'); rightEl.style.borderColor = varColor('--danger');
+                            leftEl.style.backgroundColor = '#FEF2F2'; rightEl.style.backgroundColor = '#FEF2F2';
+                        }
+                    }
+                }
+                totalPoints += (correctCount / limit) * activeSections.match.score;
+            }
+
+            // 5. Chấm Kéo thả
+            if (activeSections.dnd.active) {
+                let correctCount = 0;
+                const limit = 2; // Fixed 2 zones in this setup
+                
+                document.querySelectorAll('.draggable-item').forEach(el => el.draggable = false);
+
+                const zones = document.querySelectorAll('.drop-zone');
+                zones.forEach(zone => {
+                    const targetId = zone.dataset.target;
+                    const item = zone.querySelector('.draggable-item');
+                    if (item) {
+                        if (item.dataset.id === targetId) {
+                            correctCount++;
+                            totalCorrect++;
+                            zone.style.borderColor = varColor('--secondary');
+                            zone.style.backgroundColor = '#ECFDF5';
+                        } else {
+                            totalWrong++;
+                            zone.style.borderColor = varColor('--danger');
+                            zone.style.backgroundColor = '#FEF2F2';
+                        }
+                    } else {
+                        totalUnanswered++;
+                        zone.style.borderColor = varColor('--danger');
+                    }
+                });
+                totalPoints += (correctCount / limit) * activeSections.dnd.score;
+            }
+
+            // 6. Chấm Video
+            if (activeSections.video.active) {
+                let correctCount = 0;
+                const input = document.getElementById('video-ans');
+                input.disabled = true;
+                const val = cleanString(input.value);
+                const valid = rawData.video.ans.map(cleanString);
+                
+                if (val === '') {
+                    totalUnanswered++;
+                    input.classList.add('wrong-box');
+                    document.getElementById('video-feedback').innerHTML = `<span class="wrong-text">✗ Chưa trả lời.</span>`;
+                } else if (valid.includes(val)) {
+                    correctCount++;
+                    totalCorrect++;
+                    input.classList.add('correct-box');
+                    document.getElementById('video-feedback').innerHTML = `<span class="correct-text">✓ Tuyệt vời!</span>`;
+                } else {
+                    totalWrong++;
+                    input.classList.add('wrong-box');
+                    document.getElementById('video-feedback').innerHTML = `<span class="wrong-text">✗ Chưa đúng. Đáp án là: bạc (Ag)</span>`;
+                }
+                totalPoints += correctCount * activeSections.video.score;
+            }
+
+            // Hiện kết quả tổng
+            const finalScoreEl = document.getElementById('final-score');
+            const scoreSection = document.getElementById('score-section');
+            const maxScoreEl = document.getElementById('max-score-display');
+            const scoreMsg = document.getElementById('score-msg');
+
+            let realMax = 0;
+            Object.values(activeSections).forEach(s => { if(s.active) realMax += s.score; });
+
+            const displayScore = Math.round(totalPoints * 100) / 100;
+            
+            finalScoreEl.innerText = displayScore;
+            maxScoreEl.innerText = realMax;
+            
+            if (displayScore >= realMax * 0.8) scoreMsg.innerText = "🎉 Rất xuất sắc! Em đã nắm vững kiến thức.";
+            else if (displayScore >= realMax * 0.5) scoreMsg.innerText = "👍 Làm tốt lắm! Cố gắng ôn tập thêm một chút nhé.";
+            else scoreMsg.innerText = "💪 Đừng nản chí! Hãy xem lại video và lý thuyết rồi thử lại.";
+
+            scoreSection.style.display = 'block';
+            showToast("Đã nộp bài thành công!", "success");
+            
+            scoreSection.scrollIntoView({ behavior: 'smooth' });
+
+            // MỚI: Gửi dữ liệu về Google Sheets
+            if (config.gasUrl && config.gasUrl.trim() !== '') {
+                const totalQuestions = totalCorrect + totalWrong + totalUnanswered;
+                const payload = {
+                    name: document.getElementById('student-name').value.trim(),
+                    className: document.getElementById('student-class').value.trim() || 'Không có',
+                    score: displayScore,
+                    correct: totalCorrect,
+                    wrong: totalWrong,
+                    unanswered: totalUnanswered,
+                    total: totalQuestions,
+                    timestamp: new Date().toLocaleString('vi-VN')
+                };
+
+                // Sử dụng text/plain để tránh lỗi CORS Preflight khi fetch
+                fetch(config.gasUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                }).then(() => {
+                    console.log("Đã gửi dữ liệu học sinh thành công lên Google Sheets");
+                }).catch(err => {
+                    console.error("Lỗi khi gửi dữ liệu:", err);
+                });
+            }
+        }
+
+        function varColor(name) {
+            return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+        }
+
+        function showToast(msg, type = "info") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerText = msg;
+            container.appendChild(toast);
+            
+            // Trigger animation
+            setTimeout(() => toast.classList.add('show'), 10);
+            
+            // Remove after 3s
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function showModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+            if (id === 'auth-modal') {
+                document.getElementById('admin-pass-input').value = '';
+                document.getElementById('auth-error').style.display = 'none';
+            }
+        }
+
+        function openAdminAuth() {
+            showModal('auth-modal');
+            setTimeout(() => document.getElementById('admin-pass-input').focus(), 100);
+        }
+
+        function verifyAdmin() {
+            const pass = document.getElementById('admin-pass-input').value;
+            if (pass === '1230') {
+                closeModal('auth-modal');
+                openAdminPanel();
+            } else {
+                document.getElementById('auth-error').style.display = 'block';
+            }
+        }
+
+        function openAdminPanel() {
+            const container = document.getElementById('admin-form-container');
+            let html = `
+                <div class="input-group" style="margin-bottom: 15px;">
+                    <label>Tên bài học</label>
+                    <input type="text" id="adm-lesson-name" value="${config.lessonName}">
+                </div>
+                <div class="input-group" style="margin-bottom: 15px;">
+                    <label>Tổng điểm dự kiến</label>
+                    <input type="number" id="adm-total-score" value="${config.totalScore}" min="1">
+                </div>
+            `;
+
+            // Loop qua các section
+            const sections = [
+                { id: 'mcq', name: 'Trắc nghiệm', maxQ: rawData.mcq.length },
+                { id: 'fib', name: 'Điền khuyết', maxQ: rawData.fib.length },
+                { id: 'tf', name: 'Đúng/Sai', maxQ: rawData.tf.length },
+                { id: 'match', name: 'Nối cột', maxQ: rawData.match.left.length },
+                { id: 'dnd', name: 'Kéo thả ảnh', maxQ: 2 },
+                { id: 'video', name: 'Video tương tác', maxQ: 1 }
+            ];
+
+            sections.forEach(s => {
+                const cfg = config.sections[s.id];
+                html += `
+                <div class="admin-section-config">
+                    <label style="font-weight: bold; display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" id="adm-${s.id}-active" ${cfg.active ? 'checked' : ''} style="transform: scale(1.2)"> 
+                        Sử dụng phần: ${s.name}
+                    </label>
+                    <div class="admin-grid">
+                        <div class="input-group">
+                            <label>Số câu (Tối đa ${s.maxQ})</label>
+                            <input type="number" id="adm-${s.id}-qCount" value="${cfg.qCount}" min="1" max="${s.maxQ}">
+                        </div>
+                        <div class="input-group">
+                            <label>Điểm phân bổ</label>
+                            <input type="number" id="adm-${s.id}-score" value="${cfg.score}" min="0.5" step="0.5">
+                        </div>
+                    </div>
+                </div>`;
+            });
+
+            // Extra config (Video URL, Images)
+            html += `
+                <div class="admin-section-config">
+                    <label style="font-weight: bold; color: var(--secondary);">Lưu điểm vào Google Sheets</label>
+                    <div style="font-size: 13px; color: var(--text-light); margin-bottom: 5px;">Dán Web App URL của Google Apps Script vào đây (Để trống nếu không dùng)</div>
+                    <input type="text" id="adm-gas-url" class="modal-input" value="${config.gasUrl || ''}" placeholder="https://script.google.com/macros/s/...">
+                </div>
+                <div class="admin-section-config">
+                    <label style="font-weight: bold;">Cấu hình Video URL (Youtube Embed)</label>
+                    <input type="text" id="adm-video-url" class="modal-input" value="${config.videoUrl}">
+                </div>
+                <div class="admin-section-config">
+                    <label style="font-weight: bold;">Tải ảnh Kéo Thả (Tùy chọn)</label>
+                    <div style="font-size: 13px; color: var(--text-light); margin-bottom: 10px;">Để trống nếu muốn dùng chữ mặc định.</div>
+                    
+                    <div class="input-group" style="margin-bottom: 10px;">
+                        <label>Ảnh cấu tạo Glucose:</label>
+                        <input type="file" id="adm-img-glu" accept="image/*" onchange="previewImage(this, 'preview-glu')">
+                        <img id="preview-glu" src="${config.dndImages['img-glu']}" style="max-height: 50px; margin-top: 5px; ${config.dndImages['img-glu'] ? '' : 'display:none;'}">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Ảnh cấu tạo Fructose:</label>
+                        <input type="file" id="adm-img-fru" accept="image/*" onchange="previewImage(this, 'preview-fru')">
+                        <img id="preview-fru" src="${config.dndImages['img-fru']}" style="max-height: 50px; margin-top: 5px; ${config.dndImages['img-fru'] ? '' : 'display:none;'}">
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = html;
+            showModal('admin-modal');
+        }
+
+        function previewImage(input, previewId) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById(previewId);
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                    img.dataset.b64 = e.target.result; // Tạm lưu vào DOM
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function saveAdminConfig() {
+            // Validate points
+            let targetTotal = parseFloat(document.getElementById('adm-total-score').value) || 10;
+            let sumPoints = 0;
+            
+            const keys = ['mcq', 'fib', 'tf', 'match', 'dnd', 'video'];
+            
+            keys.forEach(k => {
+                if(document.getElementById(`adm-${k}-active`).checked) {
+                    sumPoints += parseFloat(document.getElementById(`adm-${k}-score`).value) || 0;
+                }
+            });
+
+            if (Math.abs(sumPoints - targetTotal) > 0.01) {
+                showToast(`Lỗi: Tổng điểm các phần (${sumPoints}) không bằng Tổng điểm phiếu (${targetTotal})!`, "error");
+                return; // Ngăn lưu
+            }
+
+            // Save values
+            config.lessonName = document.getElementById('adm-lesson-name').value;
+            config.totalScore = targetTotal;
+            config.videoUrl = document.getElementById('adm-video-url').value;
+            config.gasUrl = document.getElementById('adm-gas-url').value;
+
+            keys.forEach(k => {
+                config.sections[k].active = document.getElementById(`adm-${k}-active`).checked;
+                config.sections[k].qCount = parseInt(document.getElementById(`adm-${k}-qCount`).value);
+                config.sections[k].score = parseFloat(document.getElementById(`adm-${k}-score`).value);
+            });
+
+            // Save images
+            const imgGluPrev = document.getElementById('preview-glu');
+            const imgFruPrev = document.getElementById('preview-fru');
+            
+            if (imgGluPrev.dataset.b64) config.dndImages['img-glu'] = imgGluPrev.dataset.b64;
+            if (imgFruPrev.dataset.b64) config.dndImages['img-fru'] = imgFruPrev.dataset.b64;
+
+            // Save to storage
+            try {
+                localStorage.setItem('glucoseWorksheetConfig', JSON.stringify(config));
+                showToast("Đã lưu cấu hình thành công!", "success");
+                closeModal('admin-modal');
+                init(); // Rerender
+            } catch (e) {
+                showToast("Lỗi khi lưu (có thể do ảnh tải lên dung lượng quá lớn).", "error");
+            }
+        }
+
+        function resetConfig() {
+            localStorage.removeItem('glucoseWorksheetConfig');
+            location.reload();
+        }
+
+        // Bắt sự kiện phím Enter cho mật khẩu
+        document.getElementById('admin-pass-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                verifyAdmin();
+            }
+        });
+
+        // Khởi chạy
+        window.onload = init;
+    </script>
+</body>
+</html>
